@@ -1,1 +1,13 @@
 **/.DS_Store
+
+# .gitignore
+
+# Ignore .env files
+.env
+
+# Other files/directories you might want to ignore
+*.json
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
