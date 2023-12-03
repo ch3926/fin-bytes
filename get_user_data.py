@@ -4,6 +4,9 @@ import csv
 import smtplib
 import ssl
 
+import news_api
+import openai_api
+
 sa = gspread.service_account(filename="fin-bytes.json") # service account to use for api
 sh = sa.open("fin-bytes") # the google sheet containing all the user entered data
 sheet = sh.worksheet("Investing Survey") # specific sheet containing the data
@@ -29,10 +32,15 @@ with open('user_info.csv', 'w', newline='') as output_file:
     dict_writer.writerows(sheet_dict)
 
 
-def send_mail():
+def send_mail(news, summary):
     message = """Subject: Weekly Fin Byte!
 
-    Hi {firstName} {lastName}, here is your weekly update on {interests}"""
+    Hi {firstName} {lastName}, here is your weekly update on {interests} 
+
+    {summary}
+
+    {news}
+    """
 
     from_address = "finbytes.info@gmail.com"
     email_password = "ytge xsnj zrnl xigg"
