@@ -38,9 +38,27 @@ all_articles = newsapi.get_everything(
     page=2
 )
 
-# Convert the articles to a JSON file
-output_file_path = '/Users/namayjindal/Desktop/developer/fin-bytes/financial_news_articles.json'
-with open(output_file_path, 'w') as json_file:
-    json.dump(all_articles, json_file, indent=2)
+# Remove unwanted fields from each article
+cleaned_articles = []
+for article in all_articles['articles']:
+    cleaned_article = {
+        'source': article['source'],
+        'title': article['title'],
+        'description': article['description'],
+        'url': article['url']
+    }
+    cleaned_articles.append(cleaned_article)
 
-print(f'Financial news articles saved to {output_file_path}')
+# Create a dictionary with cleaned data
+cleaned_data = {
+    'status': all_articles['status'],
+    'totalResults': all_articles['totalResults'],
+    'articles': cleaned_articles
+}
+
+# Convert the cleaned data to a JSON file
+output_file_path = '/Users/namayjindal/Desktop/developer/fin-bytes/financial_news_articles_cleaned.json'
+with open(output_file_path, 'w') as json_file:
+    json.dump(cleaned_data, json_file, indent=2)
+
+print(f'Cleaned financial news articles saved to {output_file_path}')
