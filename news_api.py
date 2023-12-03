@@ -2,6 +2,8 @@ import json
 from datetime import datetime, timedelta
 from newsapi import NewsApiClient
 
+
+
 # Init
 newsapi = NewsApiClient(api_key='01246e43061d4f3f981373160e2b4ec5')
 
