@@ -27,15 +27,15 @@ financial_news_domains = [
     'seekingalpha.com'   # Seeking Alpha
 ]
 
-# Make the News API request for the last week with domain filtering
+# Make the News API request for the last week with domain filtering and top 50 articles
 all_articles = newsapi.get_everything(
     q='stocks | stock market',
     from_param=from_date_str,
     to=to_date_str,
     language='en',
-    sort_by='relevancy',
+    sort_by='popularity',  # You can change this to 'relevancy' if needed
     domains=','.join(financial_news_domains),  # Convert the list to a comma-separated string
-    page=2
+    page_size=30  # Limit the number of articles to 30
 )
 
 # Remove unwanted fields from each article
@@ -57,7 +57,7 @@ cleaned_data = {
 }
 
 # Convert the cleaned data to a JSON file
-output_file_path = '/Users/namayjindal/Desktop/developer/fin-bytes/financial_news_articles_cleaned.json'
+output_file_path = '/Users/namayjindal/Desktop/developer/fin-bytes/financial_news_articles.json'
 with open(output_file_path, 'w') as json_file:
     json.dump(cleaned_data, json_file, indent=2)
 

@@ -1,5 +1,6 @@
 from openai import OpenAI
 from dotenv import load_dotenv
+import json
 
 load_dotenv()
 
@@ -8,6 +9,32 @@ client = OpenAI()
 # Variables for user experience level and interests
 user_experience = "intermediate"
 user_interests = "Stocks, Cryptocurrency"
+
+# Load the news articles from the JSON file
+input_file_path = '/Users/namayjindal/Desktop/developer/fin-bytes/financial_news_articles.json'
+with open(input_file_path, 'r') as json_file:
+    news_articles = json.load(json_file)['articles']
+
+# Prepare the input for GPT-3.5
+input_text = f'Create a list of 5 articles for a user who is a {user_experience}, and interested iinvesting in {user_interests}. Here are the news articles:'
+
+for article in news_articles:
+    input_text += f"Title: {article['title']}\nSource: {article['source']['name']}\nDescription: {article['description']}\nLink: {article['url']}\n\n"
+
+# Generate a summary using GPT-3.5
+completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant, who goes through a JSON file with extracted news articles, and based on the context provided, selects 5 helpful news articles that should be selected to display to the user. The information to be selected is the title, the news source (website), a brief description, and the link to the article. Make sure to also select articles from varied sources, to ensure diversity of topics being covered. Just give me the articles without any text before or after the list. "},
+        {"role": "user", "content": input_text}
+    ]
+)
+
+# Extract the generated summary
+generated_summary = completion.choices[0].message.content
+
+# Print the generated summary
+print(generated_summary)
 
 week_number = 2
 
