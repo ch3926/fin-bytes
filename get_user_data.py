@@ -19,7 +19,6 @@ sheet_list = sheet.get_all_values()
 # json_info = json.dumps(sheet_dict)
 # print(json_info)
 
-
 # convert list of dicts to csv
 
 keys = sheet_dict[0].keys()
