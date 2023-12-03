@@ -1,7 +1,3 @@
-import get_user_data
-import news_api
-import openai_api
-import firebase
 from openai import OpenAI
 from dotenv import load_dotenv
 import json
@@ -118,7 +114,7 @@ def openai_summary(level, interests):
     completion = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You are a helpful assistant who creates useful and educational snippets of information that would go out to a user on a week by week basis. These snippets will cater to information regarding investing, and should range between 500 - 700 words. You must not repeat information mentioned in a previous email, and strive to provide all information that a user may need to get into investing. The tone should be friendly, yet formal. The level of the weekly snippets should also increase week by week. Towards the end of this message, you must create a small quiz with 3-4 questions to engage the user and help them check how much of the snippet they have understood. Label the first part as 'Snippet', and label the second part as 'Quiz' "},
+            {"role": "system", "content": "You are a helpful assistant who creates useful and educational snippets of information that would go out to a user on a week by week basis. These snippets will cater to information regarding investing, and should range between 500 - 700 words. You must not repeat information mentioned in a previous email, and strive to provide all information that a user may need to get into investing. The tone should be friendly, yet formal. The level of the weekly snippets should also increase week by week. Towards the end of this message, you must create a small quiz with 3-4 questions to engage the user and help them check how much of the snippet they have understood. Label the first part as 'Snippet', and label the second part as 'Quiz'. Don't write 'Hello User' or 'Thank you' at the end, as that is not needed."},
 
             {"role": "user", "content": user_prompt}
         ]
@@ -148,29 +144,13 @@ def openai_summary(level, interests):
     print("\nQuiz:")
     print(quiz)"""
 
-    email_string = snippet + '\n\n' + generated_summary + '\n\n Quiz: ' + quiz
+    email_string = snippet + '\n\n' + generated_summary + '\n\n Quiz: \n ' + quiz
 
     return email_string
 
-with open("user_info.csv") as file:
-            reader = csv.reader(file)
-            next(reader)  # Skip header row
-            for user in reader:
-                first_name = user[0]
-                last_name = user[1]
-                email = user[2]
-                level = user[3]
-                interests = user[4]
-                date_time = user[5]
-
-                email_string = openai_summary(level, interests)
 
 
-
-
-
-
-def send_mail(news, summary):
+def send_mail():
 
     from_address = "finbytes.info@gmail.com"
     email_password = "ytge xsnj zrnl xigg"
@@ -206,10 +186,12 @@ def send_mail(news, summary):
                 server.sendmail(
                     from_address,
                     email,
-                    message.format(firstName=first_name,lastName=last_name, interests=interests, email_string=email_string),
+                    message.format(firstName=first_name,lastName=last_name, interests=interests, email_string=email_string).encode('utf-8'),
             )
 
 send_mail()
+
+print('Done!')
 
 
 
