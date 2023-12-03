@@ -1,5 +1,6 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
+import csv
 from datetime import datetime, timedelta
 
 # Initialize Firebase
@@ -11,6 +12,9 @@ db = firestore.client()
 
 def calculate_week_number(signup_date):
     # Assuming your newsletters are sent every Sunday
+    # Convert signup_date to a datetime object
+    signup_date = datetime.strptime(signup_date, '%m/%d/%Y')
+
     # Calculate the difference in days from the signup date to the current date
     delta_days = (datetime.now() - signup_date).days
 
@@ -24,18 +28,28 @@ def add_user(user_data):
     users_ref = db.collection('users')
     users_ref.add(user_data)
 
-signup_date = '2023-04-01' # Replace with actual date format
-week_number = calculate_week_number(signup_date)
+# Read CSV file and add user data to Firestore
+csv_file_path = 'user_info.csv'  # Replace with the actual path
+with open(csv_file_path, newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        # Convert 'Submitted At' to a formatted date string (if needed)
+        formatted_date = datetime.strptime(row['Submitted At'], '%m/%d/%Y %H:%M:%S').strftime('%m/%d/%Y')
 
-# Example data
-user_data = {
-    'name': 'John Doe',
-    'email': 'john@example.com',
-    'experience_level': 'beginner',
-    'interest': 'Stocks',
-    'form_date': signup_date,  
-    'Week': week_number
-}
+        # Calculate week number
+        week_number = calculate_week_number(formatted_date)
 
-# Add user data to Firestore
-add_user(user_data)
+        # Example data (replace with actual CSV columns)
+        user_data = {
+            'name': f"{row['First name']} {row['Last name']}",
+            'email': row['Email'],
+            'experience_level': row['Experience Level'].lower(),
+            'interest': row['Topics of Interest'],
+            'form_date': formatted_date,
+            'Week': week_number
+        }
+
+        # Add user data to Firestore
+        add_user(user_data)
+
+print('Users data added to Firestore successfully.')
