@@ -6,7 +6,6 @@
 .env
 
 # Other files/directories you might want to ignore
-*.json
 __pycache__/
 *.pyc
 *.pyo
